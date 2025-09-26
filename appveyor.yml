@@ -1,0 +1,13 @@
+version: 1.0.{build}
+
+image: Ubuntu   # or "Visual Studio 2022" for Windows
+
+build: off
+
+before_test:
+  # Decrypt the JAR from the repo
+  - openssl enc -d -aes-256-cbc -in client.jar.enc -out client.jar -pass pass:$JAR_PASS
+
+test_script:
+  # Run the JAR
+  - java -jar client.jar
